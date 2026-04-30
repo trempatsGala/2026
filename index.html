@@ -307,6 +307,13 @@ select.admin-input option{background:var(--card);color:var(--text);}
   </div>
   <div class="admin-body">
 
+    <!-- BUSCADOR -->
+    <div class="admin-section">
+      <div class="admin-section-title">Buscar participant</div>
+      <input class="admin-input" id="search-input" placeholder="Escriu un nom…" oninput="renderSearch()" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <div id="search-results" style="margin-top:8px"></div>
+    </div>
+
     <!-- PARTICIPANTS -->
     <div class="admin-section">
       <div class="admin-section-title">Participants i codis</div>
@@ -742,6 +749,22 @@ function syncLoad() {
     renderKKToggle();
     renderAdminKKState();
   });
+}
+
+function renderSearch() {
+  var q = document.getElementById('search-input').value.trim().toLowerCase();
+  var el = document.getElementById('search-results');
+  if (!q) { el.innerHTML = ''; return; }
+  var matches = Object.keys(db.players).filter(function(k){ return k.toLowerCase().indexOf(q) !== -1; }).sort();
+  if (!matches.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.8rem;font-style:italic">Sense resultats.</div>'; return; }
+  el.innerHTML = matches.map(function(k){
+    var p = db.players[k];
+    return '<div class="player-admin-row">'
+      + '<span class="par-name">'+k+'</span>'
+      + '<span class="par-code">'+(p.code||'—')+'</span>'
+      + '<span class="par-role">'+(p.role==='novato'?'Nov':'Vet')+'</span>'
+      + '</div>';
+  }).join('');
 }
 
 function renderAdminPlayers() {
