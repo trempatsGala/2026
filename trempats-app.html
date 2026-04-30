@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Trempats · Cena de Gala</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #2e1f0a;
+  --bg2:      #3a2810;
+  --card:     #4a3418;
+  --card2:    #563e20;
+  --gold:     #D6AA74;
+  --gold2:    #e8c99a;
+  --cream:    #f9f0e0;
+  --text:     #f4e8d0;
+  --muted:    #a08860;
+  --border:   rgba(214,170,116,0.25);
+  --border2:  rgba(214,170,116,0.55);
+  --accent:   #c0641a;
+  --green:    #6aaa72;
+  --red:      #b84040;
+  --novato:   #9a6830;
+  --shadow:   0 4px 32px rgba(0,0,0,0.4);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'Montserrat',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(201,168,76,0.08) 0%,transparent 65%);pointer-events:none;z-index:0;}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh;flex-direction:column;position:relative;z-index:1;}
+.screen.active{display:flex;}
+
+/* ── LOGIN ── */
+#s-login{align-items:center;justify-content:center;padding:32px 24px;}
+.login-wrap{width:100%;max-width:360px;text-align:center;}
+.login-ornament{color:var(--gold);font-size:0.75rem;letter-spacing:0.4em;margin-bottom:20px;opacity:0.6;}
+.login-logo{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,16vw,6rem);font-weight:700;font-style:italic;line-height:0.85;color:var(--cream);margin-bottom:4px;}
+.login-colla{font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.login-event{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:40px;}
+.login-divider{width:40px;height:1px;background:var(--gold);margin:0 auto 40px;opacity:0.35;}
+.login-label{font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;text-align:left;}
+.login-input{
+  width:100%;background:var(--card);border:1px solid var(--border);
+  border-radius:10px;color:var(--text);font-family:'Montserrat',sans-serif;
+  font-size:1rem;padding:13px 16px;outline:none;margin-bottom:12px;
+  transition:border-color 0.2s;
+}
+.login-input:focus{border-color:var(--border2);}
+.login-input::placeholder{color:var(--muted);}
+.login-error{font-size:0.72rem;color:#e07070;margin-bottom:12px;min-height:18px;text-align:center;}
+.btn-login{
+  width:100%;padding:14px;border:none;border-radius:12px;
+  background:var(--gold);color:var(--bg);font-family:'Montserrat',sans-serif;
+  font-size:0.88rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;
+  transition:opacity 0.15s,transform 0.12s;
+}
+.btn-login:active{transform:scale(0.97);}
+.btn-login:hover{opacity:0.9;}
+.admin-link{margin-top:24px;font-size:0.62rem;color:var(--muted);cursor:pointer;letter-spacing:0.08em;text-decoration:underline;text-underline-offset:3px;}
+
+/* ── PROFILE ── */
+#s-profile{padding:0;}
+.profile-hero{
+  padding:32px 20px 24px;
+  background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);
+  border-bottom:1px solid var(--border);
+  text-align:center;
+}
+.profile-welcome{font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.profile-name{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,13vw,4.5rem);font-weight:700;font-style:italic;line-height:0.95;color:var(--cream);margin-bottom:6px;}
+.profile-badge{
+  display:inline-block;font-size:0.58rem;font-weight:700;letter-spacing:0.14em;
+  text-transform:uppercase;padding:3px 12px;border-radius:99px;margin-bottom:12px;
+}
+.badge-nov{background:rgba(122,78,32,0.3);color:#d4905a;border:1px solid rgba(122,78,32,0.5);}
+.badge-vet{background:rgba(201,168,76,0.12);color:var(--gold);border:1px solid var(--border);}
+.profile-tagline{font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:var(--muted);line-height:1.4;max-width:280px;margin:0 auto;}
+
+.profile-body{padding:20px 20px 48px;flex:1;}
+.section-head{
+  display:flex;align-items:center;gap:10px;
+  font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:14px;
+}
+.section-head::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* progress */
+.prog-wrap{background:rgba(255,255,255,0.05);border-radius:99px;height:4px;overflow:hidden;margin-bottom:4px;}
+.prog-fill{height:100%;background:var(--gold);border-radius:99px;transition:width 0.4s ease;}
+.prog-text{font-size:0.6rem;color:var(--muted);text-align:right;margin-bottom:16px;letter-spacing:0.05em;}
+
+/* mission cards */
+.mission-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:14px 16px;margin-bottom:10px;
+  display:flex;gap:12px;align-items:flex-start;
+  transition:border-color 0.2s,opacity 0.3s;
+}
+.mission-card.done{opacity:0.4;border-color:rgba(106,170,114,0.3);}
+.mcheck{
+  width:22px;height:22px;border-radius:50%;border:1.5px solid var(--muted);
+  flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all 0.2s;font-size:0.7rem;color:var(--bg);
+}
+.mission-card.done .mcheck{background:var(--green);border-color:var(--green);}
+.mcontent{flex:1;}
+.mdiff{
+  font-size:0.52rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:5px;display:inline-block;padding:2px 7px;border-radius:4px;
+}
+.diff-easy{background:rgba(74,124,89,0.2);color:#8fd4a0;}
+.diff-med {background:rgba(160,120,30,0.25);color:#d4a84c;}
+.diff-hard{background:rgba(160,60,30,0.25);color:#e09060;}
+.diff-epic{background:rgba(201,168,76,0.12);color:var(--gold2);}
+.mtext{font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.45;color:var(--text);}
+.mtext b{color:var(--gold2);font-weight:600;}
+.mtext i{font-style:italic;color:rgba(240,224,188,0.7);}
+
+/* kisskiller block */
+.kk-block{
+  background:linear-gradient(135deg,#2a1208,#1e1508);
+  border:1px solid rgba(192,84,26,0.3);border-radius:16px;
+  padding:20px;margin-bottom:10px;
+}
+.kk-block-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;font-weight:700;color:var(--cream);margin-bottom:4px;}
+.kk-block-sub{font-size:0.62rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;}
+.kk-target-name{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,10vw,3.5rem);font-weight:700;line-height:1;color:var(--cream);margin-bottom:8px;}
+.kk-action-pill{
+  display:inline-block;background:rgba(192,84,26,0.12);border:1px solid rgba(192,84,26,0.3);
+  border-radius:99px;padding:5px 14px;font-size:0.8rem;color:rgba(240,224,188,0.85);margin-bottom:8px;
+}
+.kk-warn{font-size:0.68rem;color:var(--muted);font-style:italic;}
+.kk-pending{font-size:0.85rem;color:var(--muted);font-style:italic;text-align:center;padding:16px 0;}
+.kk-dead-msg{font-size:0.85rem;color:#e07070;text-align:center;padding:8px 0;}
+.btn-elim{
+  width:100%;padding:12px;border:none;border-radius:10px;
+  background:rgba(192,84,26,0.15);border:1px solid rgba(192,84,26,0.35);
+  color:#e09060;font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:600;
+  cursor:pointer;margin-top:12px;letter-spacing:0.04em;transition:background 0.15s;
+}
+.btn-elim:hover{background:rgba(192,84,26,0.25);}
+.btn-logout{
+  width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;
+  background:transparent;color:var(--muted);font-family:'Montserrat',sans-serif;
+  font-size:0.78rem;cursor:pointer;letter-spacing:0.06em;margin-top:8px;
+}
+
+/* ── ADMIN ── */
+#s-admin{padding:0;}
+.admin-header{
+  padding:20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  background:var(--bg2);
+}
+.admin-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;font-weight:700;}
+.admin-body{padding:20px 20px 48px;flex:1;overflow-y:auto;}
+
+.admin-section{margin-bottom:28px;}
+.admin-section-title{font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.admin-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.field-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
+.admin-input{
+  flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.85rem;
+  padding:10px 12px;outline:none;
+}
+.admin-input:focus{border-color:var(--border2);}
+.admin-input::placeholder{color:var(--muted);}
+select.admin-input option{background:var(--card);color:var(--text);}
+
+.btn{
+  display:block;width:100%;padding:13px;border:none;border-radius:11px;
+  font-family:'Montserrat',sans-serif;font-size:0.85rem;font-weight:600;
+  cursor:pointer;margin-bottom:8px;transition:transform 0.12s,opacity 0.12s;letter-spacing:0.04em;
+}
+.btn:last-child{margin-bottom:0;}
+.btn:active{transform:scale(0.97);}
+.btn-gold{background:var(--gold);color:var(--bg);}
+.btn-gold:disabled{opacity:0.3;cursor:not-allowed;transform:none;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-danger{background:rgba(184,64,64,0.15);border:1px solid rgba(184,64,64,0.3);color:#e07070;}
+.btn-sm{width:auto;display:inline-block;padding:8px 14px;font-size:0.75rem;border-radius:8px;margin-bottom:0;}
+
+.player-admin-row{
+  display:flex;align-items:center;gap:8px;padding:9px 12px;
+  background:var(--card);border:1px solid var(--border);border-radius:9px;margin-bottom:7px;
+  font-size:0.82rem;
+}
+.par-name{flex:1;font-weight:500;}
+.par-code{font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--gold);background:rgba(201,168,76,0.1);padding:2px 8px;border-radius:5px;letter-spacing:0.08em;}
+.par-role{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
+.par-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.9rem;padding:2px 6px;}
+.par-del:hover{color:#e07070;}
+
+.kk-admin-row{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;
+  background:var(--card);border:1px solid var(--border);border-radius:9px;margin-bottom:7px;
+}
+.kar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.kar-alive{background:var(--green);box-shadow:0 0 5px var(--green);}
+.kar-dead{background:var(--muted);}
+.kar-name{flex:1;font-size:0.85rem;font-weight:500;}
+.kar-name.dead{text-decoration:line-through;opacity:0.35;}
+.kar-arrow{color:var(--accent);font-size:0.75rem;}
+.kar-target{font-size:0.82rem;color:rgba(240,224,188,0.7);}
+.kar-target.dead{text-decoration:line-through;opacity:0.5;}
+
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.action-opt{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 10px;cursor:pointer;text-align:center;transition:all 0.15s;}
+.action-opt.sel{background:rgba(192,84,26,0.15);border-color:rgba(192,84,26,0.4);}
+.action-opt .ai{font-size:1.2rem;display:block;margin-bottom:3px;}
+.action-opt .al{font-size:0.72rem;color:rgba(240,224,188,0.7);}
+.custom-field{display:none;width:100%;background:var(--card);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.85rem;outline:none;padding:10px 12px;margin-bottom:10px;}
+.custom-field.show{display:block;}
+
+.status-msg{font-size:0.75rem;color:var(--green);text-align:center;margin:8px 0;min-height:18px;}
+.status-msg.err{color:#e07070;}
+
+.toggle-check{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:9px;margin-bottom:7px;cursor:pointer;}
+.toggle-box{width:18px;height:18px;border-radius:4px;border:1px solid var(--muted);display:flex;align-items:center;justify-content:center;font-size:0.7rem;flex-shrink:0;transition:all 0.15s;}
+.toggle-box.checked{background:var(--gold);border-color:var(--gold);color:var(--bg);}
+.toggle-name{flex:1;font-size:0.85rem;}
+.toggle-role{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.fade-in{animation:fadeIn 0.4s ease both;}
+@keyframes pop{0%{transform:scale(0.9);opacity:0;}65%{transform:scale(1.02);}100%{transform:scale(1);opacity:1;}}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div class="screen active" id="s-login">
+  <div class="login-wrap fade-in">
+    <div class="login-ornament">✦ ✦ ✦</div>
+    <div class="login-logo">Trempats</div>
+    <div class="login-colla">Colla Castellera Universitària</div>
+    <div class="login-event">Cena de Gala · 2025</div>
+    <div class="login-divider"></div>
+    <div class="login-label">El teu nom i codi secret</div>
+    <input class="login-input" id="login-combined" type="text" placeholder="Ex: Hippo47" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <div class="login-error" id="login-error"></div>
+    <button class="btn-login" onclick="doLogin()">Entrar a la cena ✦</button>
+    <div class="admin-link" onclick="goAdmin()">Accés organitzador</div>
+  </div>
+</div>
+
+<!-- ══ PROFILE ══ -->
+<div class="screen" id="s-profile">
+  <div class="profile-hero">
+    <div class="profile-welcome">Benvingut/da a la</div>
+    <div class="profile-name" id="p-name">—</div>
+    <div class="profile-badge" id="p-badge">—</div>
+    <div class="profile-tagline" id="p-tagline">—</div>
+  </div>
+  <div class="profile-body">
+
+    <div class="section-head">💀 Objectiu Secret</div>
+    <div id="p-kk-block"></div>
+
+    <div class="section-head" style="margin-top:20px">🎯 Les teves missions</div>
+    <div class="prog-wrap"><div class="prog-fill" id="p-prog"></div></div>
+    <div class="prog-text" id="p-prog-text">0 de 4 completades</div>
+    <div id="p-missions"></div>
+
+    <button class="btn-logout" onclick="doLogout()">← Tancar sessió</button>
+  </div>
+</div>
+
+<!-- ══ ADMIN ══ -->
+<div class="screen" id="s-admin">
+  <div class="admin-header">
+    <button style="background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:4px 8px" onclick="goTo('s-login')">←</button>
+    <div>
+      <div class="admin-title">Organitzador</div>
+      <div style="font-size:0.58rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase">Trempats · Cena de Gala</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-left:auto;margin-bottom:0" onclick="syncLoad()">↺ Sync</button>
+  </div>
+  <div class="admin-body">
+
+    <!-- PARTICIPANTS -->
+    <div class="admin-section">
+      <div class="admin-section-title">Participants i codis</div>
+      <div id="admin-players-list"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <input class="admin-input" id="new-name" placeholder="Nom" style="flex:2;min-width:100px">
+        <input class="admin-input" id="new-code" type="number" placeholder="Codi" style="flex:1;min-width:70px" inputmode="numeric">
+        <select class="admin-input" id="new-role" style="flex:1;min-width:80px">
+          <option value="novato">Novato/a</option>
+          <option value="veteran">Veterà/na</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-gold btn-sm" onclick="addPlayer()">+ Afegir</button>
+        <button class="btn btn-ghost btn-sm" onclick="genCodes()">🎲 Generar codis</button>
+      </div>
+      <div class="status-msg" id="players-status"></div>
+    </div>
+
+    <!-- KISSKILLER CONFIG -->
+    <div class="admin-section">
+      <div class="admin-section-title">Objectiu Secret — Configuració</div>
+      <div class="action-grid">
+        <div class="action-opt sel" onclick="kkSelAct('peto')" data-a="peto"><span class="ai">💋</span><span class="al">Petó a la galta</span></div>
+        <div class="action-opt" onclick="kkSelAct('toc')" data-a="toc"><span class="ai">👆</span><span class="al">Toc a l'espatlla</span></div>
+        <div class="action-opt" onclick="kkSelAct('ma')" data-a="ma"><span class="ai">🤝</span><span class="al">Encaixada de mans</span></div>
+        <div class="action-opt" onclick="kkSelAct('custom')" data-a="custom"><span class="ai">✏️</span><span class="al">Personalitzada</span></div>
+      </div>
+      <input class="custom-field" id="kk-custom-admin" type="text" placeholder="Descriu l'acció…">
+      <div style="font-size:0.68rem;color:var(--muted);margin-bottom:10px">Selecciona qui participa al KissKiller:</div>
+      <div id="kk-toggle-list" style="max-height:240px;overflow-y:auto;margin-bottom:10px"></div>
+      <button class="btn btn-gold" onclick="kkAssign()">🔀 Assignar objectius secrets</button>
+      <div class="status-msg" id="kk-assign-status"></div>
+    </div>
+
+    <!-- KISSKILLER ESTAT -->
+    <div class="admin-section">
+      <div class="admin-section-title">Objectiu Secret — Estat</div>
+      <div id="admin-kk-state"></div>
+      <button class="btn btn-danger" style="margin-top:8px" onclick="kkReset()">🔄 Reiniciar KissKiller</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────────────────
+var BIN_ID  = '69f36e7baaba882197571df7';
+var API_KEY = '$2a$10$MGv4h.0HoDUN1vMOcVSS7u/wMYweyPkA/XHRRFGwrn7ngFXJkkLym';
+var ADMIN_PASS = 'avellanetapremium';
+var BASE_URL = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+var db = { players: {}, kisskiller: { active: false, action: '', assignments: {}, alive: {} } };
+var currentUser = null;
+var missionsDone = {};
+var kkAction = 'peto';
+var kkSelected = {};
+
+// Novatos i veterans per defecte
+var defaultNovatos = ["Tro","Bolt","Carpi","Busto","Basku","Boat","Neu","Ktifa","Tabal","Nutxi","Sharpay","Milka","Drac","Lliri","Mango","Montix","Windu","Pesto","Cel","Fletxa","Pop","Troia","Rat","Via","Caktus","Mafu","Pètal","Sosi","Aire","Ganchito","Alca","Mon","Gea","Lax"];
+var defaultVeterans = ["Hippo","Rus","Xop","Leti","Arrel","Nàpols","Utòpik","Cisco","Farinha","Dino","Samba","Moana","Tinto","Jazz","Oreneta","Flusky","Floquemu","Wonka","Espuma","Crack","Pirata","Caye","Revolver","Salat","QK","Gufi","Pubilla","Mao","Homi","Lagartu","Nea","Balco","Gaspi","Mosby","Pericles","Mandra","Sito","Lula","Puig","Baro","Katas","Piti","Fuji","Daisy","Esmo","Sutton","Xake"];
+
+// ─── API ─────────────────────────────────────────────────────────────────────
+function apiRead(cb) {
+  fetch(BASE_URL + '/latest', { headers: { 'X-Master-Key': API_KEY } })
+    .then(function(r){ return r.json(); })
+    .then(function(j){ db = j.record || db; if(cb) cb(); })
+    .catch(function(){ if(cb) cb(); });
+}
+
+function apiWrite(cb) {
+  fetch(BASE_URL, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+    body: JSON.stringify(db)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(){ if(cb) cb(true); })
+  .catch(function(){ if(cb) cb(false); });
+}
+
+// ─── MISSIONS BANK ───────────────────────────────────────────────────────────
+var bankNovato = {
+  easy: [
+    "Aconsegueix que en/la <b>{V}</b> et digui quant de temps porta a la colla, sense preguntar-ho directament.",
+    "Fes que en/la <b>{V}</b> et doni un consell de supervivència per als assajos sense que tu li ho demanis.",
+    "Aconsegueix que en/la <b>{N}</b> et confessi si té por de les altures. Sense preguntar-ho de cop.",
+    "Parla un minut sencer amb en/la <b>{V}</b> sense mencionar castells ni la colla.",
+    "Aconsegueix que en/la <b>{N}</b> et digui per quin motiu va entrar a la colla.",
+    "Fes que en/la <b>{V}</b> et presenti a algú que tu no coneixes.",
+    "Aconsegueix que en/la <b>{V}</b> et faci un compliment sense que tu el provoquis.",
+    "Pregunta a en/la <b>{V}</b> el nom d'un castell sense admetre que no en saps cap.",
+    "Fes que en/la <b>{V}</b> et proposi quedar algun dia fora de la colla. Ha de ser idea seva.",
+    "Aconsegueix que en/la <b>{V}</b> t'expliqui quina era la seva posició al primer castell que va fer.",
+    "Fes que en/la <b>{N}</b> admeti que tampoc té ni idea de moltes coses de la colla.",
+    "Aconsegueix que en/la <b>{V}</b> et digui quin és el moment de l'any casteller que més li agrada.",
+    "Fes que en/la <b>{N}</b> t'ensenyi alguna cosa del mòbil voluntàriament.",
+    "Aconsegueix que en/la <b>{V}</b> et tataregi o canti qualsevol cosa de manera espontània.",
+    "Fes que en/la <b>{V}</b> et pregunti com et trobes, de manera genuïna.",
+  ],
+  med: [
+    "Convenç en/la <b>{V}</b> que tu ja saps fer un pilar. Aguanta fins que algú ho desmenteixi.",
+    "Fes veure a en/la <b>{V}</b> que ja coneixes perfectament totes les posicions d'un castell. Improvisa els noms.",
+    "Explica a en/la <b>{V}</b> una anècdota completament inventada d'un assaig anterior com si hi haguessis estat.",
+    "Convenç en/la <b>{N}</b> que tu ja ets l'apuntat/da per fer d'enxaneta a la propera actuació.",
+    "Fes que en/la <b>{V}</b> et doni la raó en una discussió sobre castells, tinguis raó o no.",
+    "Aconsegueix que en/la <b>{V}</b> et dediqui un brindis sense que tu li ho demanis explícitament.",
+    "Fes que en/la <b>{N}</b> s'inventi un discurs de 30 segons sobre per què vol ser casteller/a.",
+    "Pronuncia la paraula \"pinya\" cinc vegades al llarg de la nit en contextos que no tinguin res a veure.",
+    "Convenç en/la <b>{V}</b> que la posició de <i>folre</i> és la més glamurosa i desitjada del castell.",
+    "Fes que en/la <b>{V}</b> t'expliqui el moment més caòtic que recorda d'una actuació.",
+    "Aconsegueix que en/la <b>{N}</b> et prometi que si tu caus al primer assaig, ell/a tampoc no dirà res.",
+    "Fes que en/la <b>{V}</b> et recomani quina posició hauries de demanar, com si fos un tema molt seriós.",
+    "Convenç en/la <b>{V}</b> que tu ets el/la novato/a amb més potencial de tota la colla. Sense dir-ho tu directament.",
+    "Aconsegueix que en/la <b>{N}</b> et confessi si ja s'ha penedit d'entrar a la colla.",
+    "Fes que en/la <b>{V}</b> t'expliqui alguna cosa de la colla que \"normalment no es diu als novatos\".",
+  ],
+  hard: [
+    "Convenç en/la <b>{V}</b> que la colla té un ritual secret d'iniciació per als novatos. Sense riure't.",
+    "Fes que en/la <b>{V}</b> et prometi que t'ensenyarà personalment alguna tècnica als assajos.",
+    "Aconsegueix que en/la <b>{V}</b> admeti, en veu alta, que els novatos d'aquest any són millors que ell/a quan va entrar.",
+    "Fes que en/la <b>{N}</b> es cregui que hi ha una prova secreta que els novatos heu de passar abans del primer castell.",
+    "Convenç en/la <b>{V}</b> que tu ja coneixes tota la història de la colla perquè t'ho ha explicat algú. Inventa-te-la.",
+    "Aconsegueix que en/la <b>{V}</b> et presenti a la resta de la seva taula com si fossis el/la millor novato/a de la colla.",
+    "Fes que en/la <b>{V}</b> cridi \"pels novatos!\" en un brindis sense que sàpiga que és una missió teva.",
+    "Convenç en/la <b>{N}</b> i en/la <b>{V}</b> que tu ja has decidit la teva posició al castell i que és la millor.",
+    "Aconsegueix que en/la <b>{V}</b> t'expliqui per quin motiu algun veterà concret és \"complicat\". Sense dir noms tu.",
+    "Fes que en/la <b>{V}</b> et digui, seriosament, que compta amb tu per a algun moment especial de la propera actuació.",
+  ],
+  epic: [
+    "Organitza un grup de mínim 4 novatos i en/la <b>{V}</b> fent una foto junts. El/la veterà/na no pot saber que és una missió.",
+    "Aconsegueix que en/la <b>{V}</b> dediqui un brindis específicament \"als novatos\" davant de tothom.",
+    "Fes que tres veterans diferents et donin la benvinguda a la colla al llarg de la nit, sense demanar-ho.",
+    "Organitza un debat entre en/la <b>{N}</b> i en/la <b>{V}</b> sobre quina posició al castell és la millor. Tu fas de moderador.",
+    "Aconsegueix que en/la <b>{V}</b> i en/la <b>{V2}</b> facin un brindis junts per alguna cosa que tu has proposat.",
+    "Fes que en/la <b>{V}</b> t'ensenyi alguna postura castellera enmig de la cena. Ha de durar almenys 30 segons.",
+    "Aconsegueix que en/la <b>{N}</b> i en/la <b>{V}</b> s'intercanviïn algun objecte sense raó aparent.",
+    "Fes que cinc persones estiguin dempeus alhora gràcies a alguna cosa que tu has dit o fet.",
+  ]
+};
+
+var bankVeteran = {
+  easy: [
+    "Aconsegueix que en/la <b>{N}</b> et pregunti alguna cosa de la colla sense que tu li proposis res.",
+    "Explica a en/la <b>{N}</b> el nom d'un castell sense que ell/a te l'hagi demanat.",
+    "Fes que en/la <b>{N}</b> t'expliqui per quin motiu va entrar a la colla.",
+    "Aconsegueix que en/la <b>{V}</b> et doni la raó en una discussió inventada per tu.",
+    "Fes que en/la <b>{N}</b> admeti que no té ni idea de com funciona un castell per dins.",
+    "Aconsegueix que en/la <b>{V}</b> t'expliqui el moment més vergonyós que recorda d'un assaig.",
+    "Fes que en/la <b>{N}</b> et pregunti quants anys portes a la colla.",
+    "Aconsegueix que en/la <b>{V}</b> t'ensenyi una foto del mòbil sense que tu la hi demanis directament.",
+    "Fes que en/la <b>{N}</b> et digui quin veterà li fa més respecte. Sense suggerir noms.",
+    "Aconsegueix que en/la <b>{V}</b> et confessi alguna cosa de la colla que normalment no explica.",
+    "Fes que en/la <b>{N}</b> et tataregi o canti qualsevol cosa de manera espontània.",
+    "Aconsegueix que en/la <b>{V}</b> et presenti a algú de la seva taula.",
+    "Fes que en/la <b>{N}</b> et faci un compliment sense que tu el provoquis.",
+    "Aconsegueix que en/la <b>{V}</b> et digui quin és el millor castell que ha fet mai.",
+    "Pronuncia \"pinya\" cinc vegades en converses sense context casteller al llarg de la nit.",
+  ],
+  med: [
+    "Convenç en/la <b>{V}</b> que tu ets el responsable d'haver posat el nom \"Trempats\" a la colla.",
+    "Fes que en/la <b>{N}</b> s'inventi un discurs de 30 segons sobre per què vol ser casteller/a.",
+    "Convenç en/la <b>{N}</b> que la posició de <i>folre</i> és la més glamurosa del castell.",
+    "Aconsegueix que en/la <b>{V}</b> admeti que els novatos d'aquest any són millors que ell/a quan va entrar.",
+    "Fes que en/la <b>{N}</b> es cregui que hi ha un ritual secret d'iniciació a la colla.",
+    "Convenç en/la <b>{V}</b> que tu portes tants anys a la colla que ja no recordes el teu primer assaig.",
+    "Aconsegueix que en/la <b>{N}</b> prometi venir a almenys tres assajos. Que ho digui en veu alta.",
+    "Fes que en/la <b>{V}</b> reconegui que tu ets el/la millor en la teva posició. Sense dir-ho tu primer.",
+    "Convenç en/la <b>{N}</b> que la teva posició al castell és la més difícil i sacrificada de totes.",
+    "Aconsegueix que en/la <b>{V}</b> t'expliqui algun conflicte intern de la colla, fingint que no el saps.",
+    "Fes que en/la <b>{N}</b> et pregunti si pot veure vídeos de la colla. Sense dir-li tu que n'hi ha.",
+    "Convenç en/la <b>{V}</b> que hi ha hagut canvis importants a la colla que ell/a no sap. Inventa'ls.",
+    "Aconsegueix que en/la <b>{N}</b> es cregui que fer de casteller és millor que qualsevol altre esport.",
+    "Fes que en/la <b>{V}</b> t'expliqui la seva teoria sobre per què la colla ha millorat (o empitjorat).",
+    "Convenç en/la <b>{N}</b> que tu vas inventar una tècnica que ara usa tota la colla. Amb nom i tot.",
+  ],
+  hard: [
+    "Aconsegueix que en/la <b>{N}</b> cridi \"pels Trempats!\" en un brindis sense que sàpiga que és una missió teva.",
+    "Fes que en/la <b>{V}</b> i en/la <b>{N}</b> estiguin d'acord en alguna cosa sobre la colla. Tu ho propicies.",
+    "Convenç en/la <b>{N}</b> que tu ets una llegenda de la colla i que la gent gran t'anomena per un sobrenom especial.",
+    "Aconsegueix que en/la <b>{V}</b> et prometi fer alguna cosa concreta als assajos. Que sigui real.",
+    "Fes que en/la <b>{N}</b> et presenti a algú d'una altra taula com si tu fossis \"la persona més important de la colla\".",
+    "Convenç en/la <b>{V}</b> que hi ha una tradició de pagar una ronda als novatos el primer any. Que ho accepti.",
+    "Aconsegueix que en/la <b>{N}</b> et demani un consell de vida, no de castells. Ha de ser ell/a qui el demani.",
+    "Fes que en/la <b>{V}</b> admeti davant d'algú que tu ets millor que ell/a en alguna cosa de la colla.",
+    "Convenç en/la <b>{N}</b> que has vist el seu nom en una llista de \"novatos promesa\". Sense ensenyar cap paper.",
+    "Aconsegueix que en/la <b>{V}</b> et doni la raó tres vegades seguides en la mateixa conversa.",
+  ],
+  epic: [
+    "Organitza un aplaudiment espontani per als novatos. Mínim 6 persones participant, sense que sembli forçat.",
+    "Aconsegueix que en/la <b>{N}</b> i en/la <b>{V}</b> facin un brindis junts sense que sàpiguen que ho has organitzat tu.",
+    "Organitza una foto de grup de mínim 5 persones: almenys 2 novatos i 2 veterans. Tu al mig.",
+    "Fes que en/la <b>{V}</b> ensenyi alguna postura castellera a en/la <b>{N}</b> enmig de la cena.",
+    "Aconsegueix que en/la <b>{N}</b> i en/la <b>{N2}</b> et demanin ajuda per a alguna cosa durant la nit.",
+    "Fes que en/la <b>{V}</b> i en/la <b>{V2}</b> discuteixin amistosament per alguna cosa que tu has posat sobre la taula.",
+    "Organitza un brindis col·lectiu on tothom digui el nom de la colla alhora. Mínim 8 persones. Tu l'inicies.",
+    "Aconsegueix que en/la <b>{N}</b> t'agraeixi alguna cosa que tu no has fet. Ha de ser sincer/a.",
+  ]
+};
+
+var taglinesNovato = [
+  "Primera cena, primers records. Que la nit et sorprengui.",
+  "Benvingut/da a la família. Ara toca conèixer-la.",
+  "La cena és teva. El castell ja vindrà.",
+  "Primera vegada aquí, però no serà l'última.",
+  "El primer any sempre es recorda. Fes-lo memorable.",
+];
+var taglinesVet = [
+  "Un any més. I cada any millor.",
+  "Tu ja saps com va això. Ara disfruta-ho.",
+  "Veterà/na de la casa. Benvingut/da de nou.",
+  "La colla és la colla. I tu ets part d'ella.",
+  "Aquí estàs altra vegada. Com sempre.",
+];
+
+// ─── MISSIONS LOGIC ──────────────────────────────────────────────────────────
+function pickRand(arr, ex1, ex2) {
+  var pool = arr.filter(function(n){ return n!==ex1 && n!==ex2; });
+  if (!pool.length) pool = arr.filter(function(n){ return n!==ex1; });
+  if (!pool.length) pool = arr;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function seeded(seed, max) {
+  var x = Math.sin(seed+1)*10000;
+  return Math.floor((x-Math.floor(x))*max);
+}
+
+function getMissions(name, isNovato) {
+  var seed = 0;
+  for (var i=0;i<name.length;i++) seed += name.charCodeAt(i)*(i+1);
+  var bank = isNovato ? bankNovato : bankVeteran;
+  var novList = Object.keys(db.players).filter(function(k){ return db.players[k].role==='novato'; });
+  var vetList = Object.keys(db.players).filter(function(k){ return db.players[k].role==='veteran'; });
+  if (!novList.length) novList = defaultNovatos;
+  if (!vetList.length) vetList = defaultVeterans;
+  var V  = pickRand(vetList, name, null);
+  var V2 = pickRand(vetList, name, V);
+  var N  = pickRand(novList, name, null);
+  var N2 = pickRand(novList, name, N);
+  function fill(t){ return t.replace(/{V2}/g,V2).replace(/{V}/g,V).replace(/{N2}/g,N2).replace(/{N}/g,N); }
+  return [
+    {d:'FÀCIL',   c:'diff-easy', text: fill(bank.easy[seeded(seed*3,  bank.easy.length)])},
+    {d:'MITJÀ',   c:'diff-med',  text: fill(bank.med[seeded(seed*7,   bank.med.length)])},
+    {d:'DIFÍCIL', c:'diff-hard', text: fill(bank.hard[seeded(seed*13, bank.hard.length)])},
+    {d:'EPIC',    c:'diff-epic', text: fill(bank.epic[seeded(seed*19, bank.epic.length)])},
+  ];
+}
+
+// ─── LOGIN ───────────────────────────────────────────────────────────────────
+function doLogin() {
+  var combined = document.getElementById('login-combined').value.trim();
+  var err = document.getElementById('login-error');
+  if (!combined) { err.textContent = 'Escriu el teu nom i codi.'; return; }
+  // Split: name is leading letters/spaces, code is trailing digits
+  var match = combined.match(/^([a-zA-ZÀ-ÿÀ-ÖØ-öø-ÿ\s·''-]+?)(\d{2,4})$/i);
+  if (!match) { err.textContent = 'Format incorrecte. Ex: Hippo47'; return; }
+  var name = match[1].trim();
+  var code = match[2].trim();
+  err.textContent = 'Comprovant…';
+  apiRead(function() {
+    var nameNorm = name.toLowerCase();
+    var found = null;
+    Object.keys(db.players).forEach(function(k){
+      if (k.toLowerCase() === nameNorm && String(db.players[k].code) === String(code)) found = k;
+    });
+    if (!found) { err.textContent = 'Nom o codi incorrecte. Torna-ho a intentar.'; return; }
+    err.textContent = '';
+    currentUser = found;
+    missionsDone = db.players[found].missionsDone || [false,false,false,false];
+    showProfile(found);
+  });
+}
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('login-name').value = '';
+  document.getElementById('login-code').value = '';
+  goTo('s-login');
+}
+
+// ─── PROFILE ─────────────────────────────────────────────────────────────────
+function showProfile(name) {
+  var p = db.players[name];
+  var isNovato = p.role === 'novato';
+  document.getElementById('p-name').textContent = name;
+  var badge = document.getElementById('p-badge');
+  badge.textContent = isNovato ? '✦ Novato/a ✦' : '✦ Veterà/na ✦';
+  badge.className = 'profile-badge ' + (isNovato ? 'badge-nov' : 'badge-vet');
+  var taglines = isNovato ? taglinesNovato : taglinesVet;
+  var tidx = 0;
+  for (var i=0;i<name.length;i++) tidx += name.charCodeAt(i);
+  document.getElementById('p-tagline').textContent = taglines[tidx % taglines.length];
+  renderKKBlock(name);
+  renderMissions(name, isNovato);
+  goTo('s-profile');
+}
+
+function renderKKBlock(name) {
+  var el = document.getElementById('p-kk-block');
+  var kk = db.kisskiller;
+  if (!kk.active || !kk.assignments || !kk.assignments[name]) {
+    el.innerHTML = '<div class="kk-block"><div class="kk-block-title">Objectiu Secret</div><div class="kk-pending">El joc encara no ha començat.<br>L\'organitzador ho activarà en breu.</div></div>';
+    return;
+  }
+  var alive = kk.alive || {};
+  if (!alive[name]) {
+    el.innerHTML = '<div class="kk-block"><div class="kk-block-title">Objectiu Secret</div><div class="kk-dead-msg">💀 Has estat eliminat/da.<br>Però pots seguir jugant les missions!</div></div>';
+    return;
+  }
+  var target = kk.assignments[name];
+  var targetAlive = alive[target];
+  var html = '<div class="kk-block">'
+    + '<div class="kk-block-title">El teu objectiu</div>'
+    + '<div class="kk-block-sub">Objectiu Secret · ' + (kk.action || 'acció secreta') + '</div>'
+    + '<div class="kk-target-name">' + target + '</div>'
+    + '<div class="kk-action-pill">' + (kk.action || '—') + '</div>'
+    + '<div class="kk-warn">🤫 No ho diguis a ningú. Actua amb discreció.</div>';
+  if (targetAlive) {
+    html += '<button class="btn-elim" onclick="kkEliminate(\'' + name + '\')">💀 He eliminat en/la ' + target + '</button>';
+  } else {
+    html += '<div style="margin-top:10px;font-size:0.78rem;color:var(--muted);font-style:italic">En/la ' + target + ' ja ha estat eliminat/da.<br>Recarrega per veure el teu nou objectiu.</div>';
+    html += '<button class="btn-elim" style="margin-top:8px" onclick="syncProfile()">↺ Actualitzar</button>';
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function syncProfile() {
+  apiRead(function(){
+    if (currentUser) {
+      renderKKBlock(currentUser);
+      renderMissions(currentUser, db.players[currentUser].role==='novato');
+    }
+  });
+}
+
+function kkEliminate(name) {
+  apiRead(function(){
+    var kk = db.kisskiller;
+    if (!kk.active || !kk.alive || !kk.alive[name]) return;
+    var target = kk.assignments[name];
+    kk.alive[target] = false;
+    // inherit target's target
+    var newTarget = kk.assignments[target];
+    kk.assignments[name] = newTarget;
+    // Check winner
+    var aliveList = Object.keys(kk.alive).filter(function(k){ return kk.alive[k]; });
+    if (aliveList.length === 1) {
+      kk.winner = aliveList[0];
+      kk.active = false;
+    }
+    apiWrite(function(ok){
+      if (ok) renderKKBlock(name);
+    });
+  });
+}
+
+function renderMissions(name, isNovato) {
+  var missions = getMissions(name, isNovato);
+  var done = Array.isArray(missionsDone) ? missionsDone : [false,false,false,false];
+  var doneCount = done.filter(Boolean).length;
+  var pct = (doneCount/4)*100;
+  document.getElementById('p-prog').style.width = pct + '%';
+  document.getElementById('p-prog-text').textContent = doneCount + ' de 4 completades';
+  var html = '';
+  missions.forEach(function(m,i){
+    html += '<div class="mission-card'+(done[i]?' done':'')+'" id="mc-'+i+'">'
+      + '<div class="mcheck" onclick="toggleMission('+i+')">'+(done[i]?'✓':'')+'</div>'
+      + '<div class="mcontent"><span class="mdiff '+m.c+'">'+m.d+'</span>'
+      + '<div class="mtext">'+m.text+'</div></div></div>';
+  });
+  document.getElementById('p-missions').innerHTML = html;
+}
+
+function toggleMission(i) {
+  if (!Array.isArray(missionsDone)) missionsDone = [false,false,false,false];
+  missionsDone[i] = !missionsDone[i];
+  db.players[currentUser].missionsDone = missionsDone;
+  apiWrite();
+  var p = db.players[currentUser];
+  renderMissions(currentUser, p.role==='novato');
+}
+
+// ─── ADMIN ───────────────────────────────────────────────────────────────────
+function goAdmin() {
+  var pass = prompt('Contrasenya d\'organitzador:');
+  if (pass !== ADMIN_PASS) { alert('Contrasenya incorrecta.'); return; }
+  syncLoad();
+  goTo('s-admin');
+}
+
+function syncLoad() {
+  apiRead(function(){
+    // Populate default players if empty
+    if (!db.players || !Object.keys(db.players).length) {
+      db.players = {};
+      defaultNovatos.forEach(function(n){ db.players[n] = { role:'novato', code:'', missionsDone:[false,false,false,false] }; });
+      defaultVeterans.forEach(function(n){ db.players[n] = { role:'veteran', code:'', missionsDone:[false,false,false,false] }; });
+    }
+    renderAdminPlayers();
+    renderKKToggle();
+    renderAdminKKState();
+  });
+}
+
+function renderAdminPlayers() {
+  var el = document.getElementById('admin-players-list');
+  var keys = Object.keys(db.players).sort();
+  if (!keys.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.8rem;padding:8px 0">Sense participants</div>'; return; }
+  el.innerHTML = keys.map(function(k){
+    var p = db.players[k];
+    return '<div class="player-admin-row">'
+      + '<span class="par-name">'+k+'</span>'
+      + '<span class="par-code">'+(p.code||'—')+'</span>'
+      + '<span class="par-role">'+(p.role==='novato'?'Nov':'Vet')+'</span>'
+      + '<button class="par-del" onclick="delPlayer(\''+k+'\')">✕</button>'
+      + '</div>';
+  }).join('');
+}
+
+function addPlayer() {
+  var name = document.getElementById('new-name').value.trim();
+  var code = document.getElementById('new-code').value.trim();
+  var role = document.getElementById('new-role').value;
+  var st   = document.getElementById('players-status');
+  if (!name) { st.textContent='Falta el nom.'; st.className='status-msg err'; return; }
+  if (db.players[name]) { st.textContent='Ja existeix.'; st.className='status-msg err'; return; }
+  db.players[name] = { role: role, code: code, missionsDone: [false,false,false,false] };
+  apiWrite(function(ok){
+    st.textContent = ok ? name+' afegit/da ✓' : 'Error al guardar.';
+    st.className = 'status-msg' + (ok ? '' : ' err');
+    document.getElementById('new-name').value = '';
+    document.getElementById('new-code').value = '';
+    renderAdminPlayers();
+    renderKKToggle();
+  });
+}
+
+function delPlayer(name) {
+  if (!confirm('Eliminar '+name+'?')) return;
+  delete db.players[name];
+  apiWrite(function(){ renderAdminPlayers(); renderKKToggle(); });
+}
+
+function genCodes() {
+  var used = [];
+  Object.keys(db.players).forEach(function(k){
+    var len = 2 + Math.floor(Math.random()*3); // 2-4 digits
+    var code;
+    do { code = Math.floor(Math.pow(10,len-1) + Math.random()*(Math.pow(10,len)-Math.pow(10,len-1))).toString(); }
+    while (used.indexOf(code) !== -1);
+    used.push(code);
+    db.players[k].code = code;
+  });
+  apiWrite(function(ok){
+    var st = document.getElementById('players-status');
+    st.textContent = ok ? 'Codis generats ✓' : 'Error al guardar.';
+    st.className = 'status-msg' + (ok ? '' : ' err');
+    renderAdminPlayers();
+  });
+}
+
+// ─── KK ADMIN ────────────────────────────────────────────────────────────────
+function kkSelAct(a) {
+  kkAction = a;
+  document.querySelectorAll('.action-opt').forEach(function(el){ el.classList.remove('sel'); });
+  document.querySelector('[data-a="'+a+'"]').classList.add('sel');
+  document.getElementById('kk-custom-admin').classList.toggle('show', a==='custom');
+}
+
+function kkGetActionLabel() {
+  if (kkAction==='custom') return document.getElementById('kk-custom-admin').value.trim()||'acció personalitzada';
+  return {peto:'💋 Petó a la galta',toc:'👆 Toc a l\'espatlla',ma:'🤝 Encaixada de mans'}[kkAction];
+}
+
+function renderKKToggle() {
+  var el = document.getElementById('kk-toggle-list');
+  var keys = Object.keys(db.players).sort();
+  if (!kkSelected || !Object.keys(kkSelected).length) {
+    kkSelected = {};
+    keys.forEach(function(k){ kkSelected[k] = true; });
+  }
+  el.innerHTML = keys.map(function(k){
+    var sel = kkSelected[k] !== false;
+    return '<div class="toggle-check" onclick="kkToggle(\''+k+'\')">'
+      + '<div class="toggle-box '+(sel?'checked':'')+'">'+(sel?'✓':'')+'</div>'
+      + '<span class="toggle-name">'+k+'</span>'
+      + '<span class="toggle-role">'+(db.players[k].role==='novato'?'Nov':'Vet')+'</span>'
+      + '</div>';
+  }).join('');
+}
+
+function kkToggle(name) {
+  kkSelected[name] = !kkSelected[name];
+  renderKKToggle();
+}
+
+function shuffle(arr) {
+  for (var i=arr.length-1;i>0;i--) {
+    var j=Math.floor(Math.random()*(i+1)); var t=arr[i]; arr[i]=arr[j]; arr[j]=t;
+  }
+  return arr;
+}
+
+function kkAssign() {
+  var players = Object.keys(db.players).filter(function(k){ return kkSelected[k]!==false; });
+  var st = document.getElementById('kk-assign-status');
+  if (players.length < 3) { st.textContent='Mínim 3 participants.'; st.className='status-msg err'; return; }
+  var order = shuffle(players.slice());
+  var assignments = {};
+  var alive = {};
+  for (var i=0;i<order.length;i++) {
+    assignments[order[i]] = order[(i+1)%order.length];
+    alive[order[i]] = true;
+  }
+  db.kisskiller = {
+    active: true,
+    action: kkGetActionLabel(),
+    assignments: assignments,
+    alive: alive,
+    origAssignments: JSON.parse(JSON.stringify(assignments)),
+    winner: null
+  };
+  apiWrite(function(ok){
+    st.textContent = ok ? 'Objectius assignats ✓ (' + players.length + ' participants)' : 'Error al guardar.';
+    st.className = 'status-msg' + (ok ? '' : ' err');
+    renderAdminKKState();
+  });
+}
+
+function kkReset() {
+  if (!confirm('Reiniciar el KissKiller? Es perdran totes les eliminacions.')) return;
+  db.kisskiller = { active: false, action: '', assignments: {}, alive: {} };
+  apiWrite(function(){ renderAdminKKState(); });
+}
+
+function renderAdminKKState() {
+  var el = document.getElementById('admin-kk-state');
+  var kk = db.kisskiller;
+  if (!kk || !kk.active) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:0.8rem;font-style:italic;padding:8px 0">KissKiller no actiu.</div>';
+    return;
+  }
+  var html = '';
+  Object.keys(kk.assignments).sort().forEach(function(name){
+    var alive = kk.alive[name];
+    var target = kk.assignments[name];
+    var tAlive = kk.alive[target];
+    html += '<div class="kk-admin-row">'
+      + '<div class="kar-dot '+(alive?'kar-alive':'kar-dead')+'"></div>'
+      + '<span class="kar-name'+(alive?'':' dead')+'">'+name+'</span>'
+      + '<span class="kar-arrow">▶</span>'
+      + '<span class="kar-target'+(tAlive?'':' dead')+'">'+target+'</span>'
+      + (alive?'':'<span style="font-size:0.65rem;color:var(--muted)">💀</span>')
+      + '</div>';
+  });
+  if (kk.winner) html = '<div style="font-size:0.9rem;color:var(--gold);margin-bottom:12px;font-family:Cormorant Garamond,serif;font-style:italic">🏆 Guanyador/a: <b>'+kk.winner+'</b></div>' + html;
+  el.innerHTML = html;
+}
+
+// ─── ROUTING ─────────────────────────────────────────────────────────────────
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ─── ENTER KEY ───────────────────────────────────────────────────────────────
+document.getElementById('login-combined').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>
