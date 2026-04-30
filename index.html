@@ -361,7 +361,8 @@ function apiWrite(cb) {
   })
   .then(function(r){ return r.json().then(function(j){ return {ok: r.ok, body: j}; }); })
   .then(function(res){
-    if (!res.ok) { console.error('JSONBin error:', res.body); if(cb) cb(false); return; }
+    console.log('JSONBin write response (ok='+res.ok+'):', JSON.stringify(res.body));
+    if (!res.ok) { if(cb) cb(false); return; }
     if(cb) cb(true);
   })
   .catch(function(e){ console.error('apiWrite failed:', e); if(cb) cb(false); });
