@@ -241,7 +241,7 @@ select.admin-input option{background:var(--card);color:var(--text);}
     <div class="login-event">Cena de Gala · 2025</div>
     <div class="login-divider"></div>
     <div class="login-label">El teu nom i codi secret</div>
-    <input class="login-input" id="login-combined" type="text" placeholder="Ex: Hippo47" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <input class="login-input" id="login-combined" type="text" placeholder="Ex: Nom45" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
     <div class="login-error" id="login-error"></div>
     <button class="btn-login" onclick="doLogin()">Entrar a la cena ✦</button>
     <div class="admin-link" onclick="goAdmin()">Accés organitzador</div>
@@ -539,7 +539,7 @@ function doLogin() {
   if (!combined) { err.textContent = 'Escriu el teu nom i codi.'; return; }
   // Split: name is leading letters/spaces, code is trailing digits
   var match = combined.match(/^([a-zA-ZÀ-ÿÀ-ÖØ-öø-ÿ\s·''-]+?)(\d{2,4})$/i);
-  if (!match) { err.textContent = 'Format incorrecte. Ex: Hippo47'; return; }
+  if (!match) { err.textContent = 'Format incorrecte. Ex: Nom45'; return; }
   var name = match[1].trim();
   var code = match[2].trim();
   err.textContent = 'Comprovant…';
