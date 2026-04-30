@@ -228,9 +228,34 @@ select.admin-input option{background:var(--card);color:var(--text);}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .fade-in{animation:fadeIn 0.4s ease both;}
 @keyframes pop{0%{transform:scale(0.9);opacity:0;}65%{transform:scale(1.02);}100%{transform:scale(1);opacity:1;}}
+@keyframes winnerPop{0%{opacity:0;transform:scale(0.85);}70%{transform:scale(1.04);}100%{opacity:1;transform:scale(1);}}
+@keyframes shimmer{0%,100%{opacity:0.6;}50%{opacity:1;}}
+
+/* ── WINNER OVERLAY ── */
+#winner-overlay{
+  display:none;position:fixed;inset:0;z-index:999;
+  background:rgba(20,10,2,0.96);
+  align-items:center;justify-content:center;flex-direction:column;
+  text-align:center;padding:32px;
+}
+#winner-overlay.show{display:flex;}
+.winner-crown{font-size:4rem;animation:shimmer 1.8s ease-in-out infinite;margin-bottom:16px;}
+.winner-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1rem,5vw,1.4rem);font-weight:400;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.winner-name{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,18vw,7rem);font-weight:700;font-style:italic;line-height:0.9;color:var(--cream);margin-bottom:20px;animation:winnerPop 0.7s ease both;}
+.winner-sub{font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:40px;}
+.btn-winner-close{padding:13px 32px;border:1px solid var(--border);border-radius:12px;background:transparent;color:var(--muted);font-family:'Montserrat',sans-serif;font-size:0.8rem;cursor:pointer;letter-spacing:0.08em;}
 </style>
 </head>
 <body>
+
+<!-- ══ WINNER OVERLAY ══ -->
+<div id="winner-overlay">
+  <div class="winner-crown">👑</div>
+  <div class="winner-title">Guanyador/a del KissKiller</div>
+  <div class="winner-name" id="winner-name-display">—</div>
+  <div class="winner-sub">L'últim/a en peu · Trempats 2026</div>
+  <button class="btn-winner-close" onclick="closeWinner()">Tancar</button>
+</div>
 
 <!-- ══ LOGIN ══ -->
 <div class="screen active" id="s-login">
@@ -321,6 +346,11 @@ select.admin-input option{background:var(--card);color:var(--text);}
     <div class="admin-section">
       <div class="admin-section-title">KissKiller — Estat</div>
       <div id="admin-kk-state"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+        <select class="admin-input" id="kk-manual-winner" style="flex:1;min-width:120px"></select>
+        <button class="btn btn-gold btn-sm" onclick="kkDeclareWinner()">🏆 Declarar guanyador/a</button>
+      </div>
+      <div class="status-msg" id="kk-winner-status"></div>
       <button class="btn btn-danger" style="margin-top:8px" onclick="kkReset()">🔄 Reiniciar KissKiller</button>
     </div>
 
@@ -653,7 +683,10 @@ function kkEliminate(name) {
       kk.active = false;
     }
     apiWrite(function(ok){
-      if (ok) renderKKBlock(name);
+      if (ok) {
+        renderKKBlock(name);
+        if (kk.winner) showWinner(kk.winner);
+      }
     });
   });
 }
@@ -873,6 +906,35 @@ function renderAdminKKState() {
   });
   if (kk.winner) html = '<div style="font-size:0.9rem;color:var(--gold);margin-bottom:12px;font-family:Cormorant Garamond,serif;font-style:italic">🏆 Guanyador/a: <b>'+kk.winner+'</b></div>' + html;
   el.innerHTML = html;
+  // Populate manual winner select with alive players
+  var sel = document.getElementById('kk-manual-winner');
+  if (sel) {
+    var alive = Object.keys(kk.alive).filter(function(k){ return kk.alive[k]; }).sort();
+    sel.innerHTML = '<option value="">— Selecciona —</option>' + alive.map(function(n){ return '<option value="'+n+'">'+n+'</option>'; }).join('');
+  }
+}
+
+function kkDeclareWinner() {
+  var sel = document.getElementById('kk-manual-winner');
+  var winner = sel.value;
+  var st = document.getElementById('kk-winner-status');
+  if (!winner) { st.textContent = 'Selecciona un participant.'; st.className = 'status-msg err'; return; }
+  db.kisskiller.winner = winner;
+  db.kisskiller.active = false;
+  apiWrite(function(ok) {
+    st.textContent = ok ? '🏆 ' + winner + ' declarat/da guanyador/a!' : 'Error al guardar.';
+    st.className = 'status-msg' + (ok ? '' : ' err');
+    if (ok) { renderAdminKKState(); showWinner(winner); }
+  });
+}
+
+function showWinner(name) {
+  document.getElementById('winner-name-display').textContent = name;
+  document.getElementById('winner-overlay').classList.add('show');
+}
+
+function closeWinner() {
+  document.getElementById('winner-overlay').classList.remove('show');
 }
 
 // ─── ROUTING ─────────────────────────────────────────────────────────────────
