@@ -727,12 +727,17 @@ function goAdmin() {
 
 function syncLoad() {
   apiRead(function(){
-    // Populate default players if empty
-    if (!db.players || !Object.keys(db.players).length) {
-      db.players = {};
+    if (!db.players) db.players = {};
+    var changed = false;
+    if (!Object.keys(db.players).length) {
       defaultNovatos.forEach(function(n){ db.players[n] = { role:'novato', code:'', missionsDone:[false,false,false,false] }; });
       defaultVeterans.forEach(function(n){ db.players[n] = { role:'veteran', code:'', missionsDone:[false,false,false,false] }; });
+      changed = true;
+    } else {
+      defaultNovatos.forEach(function(n){ if (!db.players[n]) { db.players[n] = { role:'novato', code:'', missionsDone:[false,false,false,false] }; changed = true; } });
+      defaultVeterans.forEach(function(n){ if (!db.players[n]) { db.players[n] = { role:'veteran', code:'', missionsDone:[false,false,false,false] }; changed = true; } });
     }
+    if (changed) apiWrite();
     renderAdminPlayers();
     renderKKToggle();
     renderAdminKKState();
