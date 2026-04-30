@@ -305,7 +305,7 @@ select.admin-input option{background:var(--card);color:var(--text);}
     <div class="admin-section">
       <div class="admin-section-title">KissKiller — Configuració</div>
       <div class="action-grid">
-        <div class="action-opt sel" onclick="kkSelAct('peto')" data-a="peto"><span class="ai">💋</span><span class="al">Petó a la galta</span></div>
+        <div class="action-opt sel" onclick="kkSelAct('peto')" data-a="peto"><span class="ai">💋</span><span class="al">Petó a la cara</span></div>
         <div class="action-opt" onclick="kkSelAct('toc')" data-a="toc"><span class="ai">👆</span><span class="al">Toc a l'espatlla</span></div>
         <div class="action-opt" onclick="kkSelAct('ma')" data-a="ma"><span class="ai">🤝</span><span class="al">Encaixada de mans</span></div>
         <div class="action-opt" onclick="kkSelAct('custom')" data-a="custom"><span class="ai">✏️</span><span class="al">Personalitzada</span></div>
@@ -603,7 +603,11 @@ function renderKKBlock(name) {
     + '<div class="kk-action-pill">' + (kk.action || '—') + '</div>'
     + '<div class="kk-warn">🤫 No ho diguis a ningú. Actua amb discreció.</div>';
   if (targetAlive) {
-    html += '<button class="btn-elim" onclick="kkEliminate(\'' + name + '\')">💀 He eliminat en/la ' + target + '</button>';
+    html += '<div style="margin-top:12px">'
+      + '<div style="font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px">Confirma escrivint el nom i codi de l\'objectiu</div>'
+      + '<input id="kk-confirm-input" class="login-input" type="text" placeholder="Ex: '+target+'47" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="margin-bottom:8px">'
+      + '<button class="btn-elim" onclick="kkConfirmEliminate(\'' + name + '\',\'' + target + '\')">💀 He eliminat en/la ' + target + '</button>'
+      + '</div>';
   } else {
     html += '<div style="margin-top:10px;font-size:0.78rem;color:var(--muted);font-style:italic">En/la ' + target + ' ja ha estat eliminat/da.<br>Recarrega per veure el teu nou objectiu.</div>';
     html += '<button class="btn-elim" style="margin-top:8px" onclick="syncProfile()">↺ Actualitzar</button>';
@@ -619,6 +623,18 @@ function syncProfile() {
       renderMissions(currentUser, db.players[currentUser].role==='novato');
     }
   });
+}
+
+function kkConfirmEliminate(name, target) {
+  var input = document.getElementById('kk-confirm-input').value.trim();
+  var match = input.match(/^([a-zA-ZÀ-ÿ\s·''-]+?)(\d{2,4})$/i);
+  if (!match) { alert('Format incorrecte. Ex: '+target+'47'); return; }
+  var inputName = match[1].trim().toLowerCase();
+  var inputCode = match[2];
+  if (inputName !== target.toLowerCase()) { alert('El nom no coincideix.'); return; }
+  var targetPlayer = db.players[target];
+  if (!targetPlayer || String(targetPlayer.code) !== String(inputCode)) { alert('Codi incorrecte.'); return; }
+  kkEliminate(name);
 }
 
 function kkEliminate(name) {
@@ -757,7 +773,7 @@ function kkSelAct(a) {
 
 function kkGetActionLabel() {
   if (kkAction==='custom') return document.getElementById('kk-custom-admin').value.trim()||'acció personalitzada';
-  return {peto:'💋 Petó a la galta',toc:'👆 Toc a l\'espatlla',ma:'🤝 Encaixada de mans'}[kkAction];
+  return {peto:'💋 Petó a la cara',toc:'👆 Toc a l\'espatlla',ma:'🤝 Encaixada de mans'}[kkAction];
 }
 
 function renderKKToggle() {
@@ -828,17 +844,31 @@ function renderAdminKKState() {
     el.innerHTML = '<div style="color:var(--muted);font-size:0.8rem;font-style:italic;padding:8px 0">KissKiller no actiu.</div>';
     return;
   }
-  var html = '';
-  Object.keys(kk.assignments).sort().forEach(function(name){
+  // Build ordered chain starting from first alive player
+  var orig = kk.origAssignments || kk.assignments;
+  var allPlayers = Object.keys(orig);
+  var chain = [];
+  var start = allPlayers[0];
+  var current = start;
+  for (var i = 0; i < allPlayers.length; i++) {
+    chain.push(current);
+    current = orig[current];
+    if (current === start) break;
+  }
+  var aliveCount = Object.keys(kk.alive).filter(function(k){ return kk.alive[k]; }).length;
+  var html = '<div style="font-size:0.7rem;color:var(--muted);margin-bottom:10px">⬤ Vius: <b style="color:var(--green)">'+aliveCount+'</b> · 💀 Eliminats: <b style="color:#e07070">'+(allPlayers.length-aliveCount)+'</b></div>';
+  chain.forEach(function(name, idx) {
     var alive = kk.alive[name];
     var target = kk.assignments[name];
     var tAlive = kk.alive[target];
-    html += '<div class="kk-admin-row">'
+    var isLast = idx === chain.length - 1;
+    html += '<div class="kk-admin-row" style="'+(alive?'':'opacity:0.45')+'">'
       + '<div class="kar-dot '+(alive?'kar-alive':'kar-dead')+'"></div>'
-      + '<span class="kar-name'+(alive?'':' dead')+'">'+name+'</span>'
-      + '<span class="kar-arrow">▶</span>'
+      + '<span class="kar-name'+(alive?'':' dead')+'" style="min-width:80px">'+name+'</span>'
+      + (alive ? '' : '<span style="font-size:0.65rem;color:#e07070;margin-right:4px">💀</span>')
+      + '<span class="kar-arrow" style="color:'+(alive?'var(--accent)':'var(--muted)')+'">▶</span>'
       + '<span class="kar-target'+(tAlive?'':' dead')+'">'+target+'</span>'
-      + (alive?'':'<span style="font-size:0.65rem;color:var(--muted)">💀</span>')
+      + (isLast ? '<span style="font-size:0.65rem;color:var(--gold);margin-left:6px">↩ tanca cercle</span>' : '')
       + '</div>';
   });
   if (kk.winner) html = '<div style="font-size:0.9rem;color:var(--gold);margin-bottom:12px;font-family:Cormorant Garamond,serif;font-style:italic">🏆 Guanyador/a: <b>'+kk.winner+'</b></div>' + html;
