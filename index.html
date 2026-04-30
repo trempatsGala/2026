@@ -258,7 +258,7 @@ select.admin-input option{background:var(--card);color:var(--text);}
   </div>
   <div class="profile-body">
 
-    <div class="section-head">💀 Objectiu Secret</div>
+    <div class="section-head">💀 KissKiller</div>
     <div id="p-kk-block"></div>
 
     <div class="section-head" style="margin-top:20px">🎯 Les teves missions</div>
@@ -303,7 +303,7 @@ select.admin-input option{background:var(--card);color:var(--text);}
 
     <!-- KISSKILLER CONFIG -->
     <div class="admin-section">
-      <div class="admin-section-title">Objectiu Secret — Configuració</div>
+      <div class="admin-section-title">KissKiller — Configuració</div>
       <div class="action-grid">
         <div class="action-opt sel" onclick="kkSelAct('peto')" data-a="peto"><span class="ai">💋</span><span class="al">Petó a la galta</span></div>
         <div class="action-opt" onclick="kkSelAct('toc')" data-a="toc"><span class="ai">👆</span><span class="al">Toc a l'espatlla</span></div>
@@ -319,7 +319,7 @@ select.admin-input option{background:var(--card);color:var(--text);}
 
     <!-- KISSKILLER ESTAT -->
     <div class="admin-section">
-      <div class="admin-section-title">Objectiu Secret — Estat</div>
+      <div class="admin-section-title">KissKiller — Estat</div>
       <div id="admin-kk-state"></div>
       <button class="btn btn-danger" style="margin-top:8px" onclick="kkReset()">🔄 Reiniciar KissKiller</button>
     </div>
@@ -342,8 +342,8 @@ var kkAction = 'peto';
 var kkSelected = {};
 
 // Novatos i veterans per defecte
-var defaultNovatos = ["Tro","Bolt","Carpi","Busto","Basku","Boat","Neu","Ktifa","Tabal","Nutxi","Sharpay","Milka","Drac","Lliri","Mango","Montix","Windu","Pesto","Cel","Fletxa","Pop","Troia","Rat","Via","Caktus","Mafu","Pètal","Sosi","Aire","Ganchito","Alca","Mon","Gea","Lax"];
-var defaultVeterans = ["Hippo","Rus","Xop","Leti","Arrel","Nàpols","Utòpik","Cisco","Farinha","Dino","Samba","Moana","Tinto","Jazz","Oreneta","Flusky","Floquemu","Wonka","Espuma","Crack","Pirata","Caye","Revolver","Salat","QK","Gufi","Pubilla","Mao","Homi","Lagartu","Nea","Balco","Gaspi","Mosby","Pericles","Mandra","Sito","Lula","Puig","Baro","Katas","Piti","Fuji","Daisy","Esmo","Sutton","Xake"];
+var defaultNovatos = ["Tro","Bolt","Carpi","Busto","Basku","Boat","Neu","Ktifa","Tabal","Nutxi","Sharpay","Milka","Drac","Lliri","Mango","Montix","Windu","Pesto","Cel","Fletxa","Pop","Troia","Rat","Via","Caktus","Mafu","Pètal","Sosi","Aire","Ganchito","Alca","Mon","Gea","Lax","Llúpol"];
+var defaultVeterans = ["Hippo","Rus","Xop","Leti","Arrel","Nàpols","Utòpik","Cisco","Farinha","Dino","Samba","Moana","Tinto","Jazz","Oreneta","Flusky","Floquemu","Wonka","Espuma","Crack","Pirata","Caye","Revolver","Salat","QK","Gufi","Pubilla","Mao","Homi","Lagartu","Nea","Balco","Gaspi","Mosby","Pericles","Mandra","Sito","Lula","Puig","Baro","Katas","Piti","Fuji","Daisy","Esmo","Sutton","Xake","Pawn","Sirena"];
 
 // ─── API ─────────────────────────────────────────────────────────────────────
 function apiRead(cb) {
@@ -586,19 +586,19 @@ function renderKKBlock(name) {
   var el = document.getElementById('p-kk-block');
   var kk = db.kisskiller;
   if (!kk.active || !kk.assignments || !kk.assignments[name]) {
-    el.innerHTML = '<div class="kk-block"><div class="kk-block-title">Objectiu Secret</div><div class="kk-pending">El joc encara no ha començat.<br>L\'organitzador ho activarà en breu.</div></div>';
+    el.innerHTML = '<div class="kk-block"><div class="kk-block-title">KissKiller</div><div class="kk-pending">El joc encara no ha començat.<br>L\'organitzador ho activarà en breu.</div></div>';
     return;
   }
   var alive = kk.alive || {};
   if (!alive[name]) {
-    el.innerHTML = '<div class="kk-block"><div class="kk-block-title">Objectiu Secret</div><div class="kk-dead-msg">💀 Has estat eliminat/da.<br>Però pots seguir jugant les missions!</div></div>';
+    el.innerHTML = '<div class="kk-block"><div class="kk-block-title">KissKiller</div><div class="kk-dead-msg">💀 Has estat eliminat/da.<br>Però pots seguir jugant les missions!</div></div>';
     return;
   }
   var target = kk.assignments[name];
   var targetAlive = alive[target];
   var html = '<div class="kk-block">'
     + '<div class="kk-block-title">El teu objectiu</div>'
-    + '<div class="kk-block-sub">Objectiu Secret · ' + (kk.action || 'acció secreta') + '</div>'
+    + '<div class="kk-block-sub">KissKiller · ' + (kk.action || 'acció secreta') + '</div>'
     + '<div class="kk-target-name">' + target + '</div>'
     + '<div class="kk-action-pill">' + (kk.action || '—') + '</div>'
     + '<div class="kk-warn">🤫 No ho diguis a ningú. Actua amb discreció.</div>';
