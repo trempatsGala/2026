@@ -522,10 +522,10 @@ function getMissions(name, isNovato) {
   var vetList = Object.keys(db.players).filter(function(k){ return db.players[k].role==='veteran'; });
   if (!novList.length) novList = defaultNovatos;
   if (!vetList.length) vetList = defaultVeterans;
-  var V  = pickRand(vetList, name, null);
-  var V2 = pickRand(vetList, name, V);
-  var N  = pickRand(novList, name, null);
-  var N2 = pickRand(novList, name, N);
+  var V  = vetList.filter(function(n){ return n!==name; })[seeded(seed*2, Math.max(1, vetList.filter(function(n){ return n!==name; }).length))];
+  var V2 = vetList.filter(function(n){ return n!==name && n!==V; })[seeded(seed*5, Math.max(1, vetList.filter(function(n){ return n!==name && n!==V; }).length))];
+  var N  = novList.filter(function(n){ return n!==name; })[seeded(seed*11, Math.max(1, novList.filter(function(n){ return n!==name; }).length))];
+  var N2 = novList.filter(function(n){ return n!==name && n!==N; })[seeded(seed*17, Math.max(1, novList.filter(function(n){ return n!==name && n!==N; }).length))];
   function fill(t){ return t.replace(/{V2}/g,V2).replace(/{V}/g,V).replace(/{N2}/g,N2).replace(/{N}/g,N); }
   return [
     {d:'FÀCIL',   c:'diff-easy', text: fill(bank.easy[seeded(seed*3,  bank.easy.length)])},
